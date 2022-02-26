@@ -37,3 +37,14 @@ class Faculties(Base):
     updateAt                = Column(DateTime, default=datetime.now(), nullable=False)
     faculties_students      = relationship("Students", back_populates="students_faculties")
     
+    
+class Registration(Base):
+    __tablename__  = "registration"
+    id             = Column(Integer, primary_key=True, index=True)
+    username       = Column(String, nullable=False)
+    password       = Column(String, nullable=False)
+    access         = Column(Boolean, nullable=False, default=True)
+    staff_id       = Column(Integer, nullable=False, default=1)
+    token          = Column(String, nullable=False)
+    created_at     = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at     = Column(DateTime, default=datetime.now(), nullable=False)

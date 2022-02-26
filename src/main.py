@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from routers import (
-    course_router
+    course_router,
+    faculty_router,
+    student_router,
+    authentication_router
 )
 
 app = FastAPI()
@@ -19,4 +22,7 @@ app.add_middleware(
 
 Base.metadata.create_all(engine)
 
-app.include_router(course_router, tags=["Courses"])
+app.include_router(authentication_router    , tags=["Authentication"])
+app.include_router(student_router           , tags=["Students"])
+app.include_router(course_router            , tags=["Courses"])
+app.include_router(faculty_router           , tags=["Faculties"])

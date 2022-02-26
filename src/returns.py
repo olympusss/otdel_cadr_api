@@ -10,6 +10,7 @@ class Returns:
     TOKEN_NOT_DECODED = {"error" : True,  "body" : "TOKEN_NOT_DECODED"}
     TOKEN_NOT_ENCODED = {"error" : True,  "body" : "TOKEN_NOT_ENCODED"}
     USER_NOT_FOUND    = {"error" : True,  "body" : "USER_NOT_FOUND"}
+    STUDENT_NOT_FOUND = {"error" : True,  "body" : "STUDENT_NOT_FOUND"}
     LIMIT             = {"error" : True,  "body" : "LIMIT"}
     
     def object(obj):
@@ -17,3 +18,6 @@ class Returns:
     
     def id(obj):
         return {"error" : False, "body" : {"INSERTED_ID" : obj}}
+    
+    def token(obj):
+        return {"error" : False, "body" : {"token" : obj}}
