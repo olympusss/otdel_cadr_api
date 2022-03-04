@@ -26,3 +26,19 @@ class SignUp(SignIn):
     
     class Config:
         orm_mode = True
+        
+
+class ParentSchema(BaseModel):
+    name                : str
+    surname             : str
+    father_name         : str
+    birth_place         : str
+    date_of_birth       : str
+    living_place        : str
+    working_place       : str
+    criminal_record     : str
+    student_id          : int
+    parent_status_id    : int
+    
+    class Config:
+        orm_mode = True

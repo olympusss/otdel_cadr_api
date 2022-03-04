@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey, Date
 from db import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -15,8 +15,9 @@ class Students(Base):
     klass                   = Column(String)
     createAt                = Column(DateTime, default=datetime.now(), nullable=False)
     updateAt                = Column(DateTime, default=datetime.now(), nullable=False)
-    students_courses        = relationship("Courses", back_populates="courses_students")
-    students_faculties      = relationship("Faculties", back_populates="faculties_students")
+    students_courses        = relationship("Courses"    , back_populates="courses_students")
+    students_faculties      = relationship("Faculties"  , back_populates="faculties_students")
+    students_parents        = relationship("Parents"    , back_populates="parents_students")
     
     
 class Courses(Base):
@@ -40,11 +41,47 @@ class Faculties(Base):
     
 class Registration(Base):
     __tablename__  = "registration"
-    id             = Column(Integer, primary_key=True, index=True)
-    username       = Column(String, nullable=False)
-    password       = Column(String, nullable=False)
-    access         = Column(Boolean, nullable=False, default=True)
-    staff_id       = Column(Integer, nullable=False, default=1)
-    token          = Column(String, nullable=False)
+    id             = Column(Integer , primary_key=True, index=True)
+    username       = Column(String  , nullable=False)
+    password       = Column(String  , nullable=False)
+    access         = Column(Boolean , nullable=False, default=True)
+    staff_id       = Column(Integer , nullable=False, default=1)
+    token          = Column(String  , nullable=False)
     created_at     = Column(DateTime, default=datetime.now(), nullable=False)
     updated_at     = Column(DateTime, default=datetime.now(), nullable=False)
+    
+    
+class ParentStatus(Base):
+    __tablename__           = "parent_status"
+    id                      = Column(Integer , primary_key=True, index=True)
+    name                    = Column(String, nullable=False)
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    parentstatus_parents    = relationship("Parents", back_populates="parents_parentstatus")
+
+
+class Parents(Base):
+    __tablename__           = "parents"
+    id                      = Column(Integer , primary_key=True, index=True)
+    name                    = Column(String, nullable=False)
+    surname                 = Column(String, nullable=False)
+    father_name             = Column(String, nullable=False)
+    birth_place             = Column(String, nullable=False)
+    date_of_birth           = Column(Date, nullable=False)
+    living_place            = Column(String, nullable=False)
+    working_place           = Column(String, nullable=False)
+    criminal_record         = Column(String, nullable=False)
+    student_id              = Column(Integer, ForeignKey("students.id"))
+    parent_status_id        = Column(Integer, ForeignKey("parent_status.id"))
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    parents_parentstatus    = relationship("ParentStatus", back_populates="parentstatus_parents")
+    parents_students        = relationship("Students"    , back_populates="students_parents")
+    
+    
+class Region(Base):
+    __tablename__           = "region"
+    id                      = Column(Integer , primary_key=True, index=True)
+    name                    = Column(String, nullable=False)
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)

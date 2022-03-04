@@ -1,15 +1,15 @@
-from operator import imod
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db import get_db
-import crud
 from returns import Returns
+import crud
 
-faculty_router = APIRouter()
 
-@faculty_router.get("/get-faculties")
-async def get_faculties(db: Session = Depends(get_db)):
-    result = await crud.read_faculties(db=db)
+student_detail_router = APIRouter()
+
+@student_detail_router.get("/get-region")
+async def get_region(db: Session = Depends(get_db)):
+    result = await crud.read_region(db=db)
     if result:
         return Returns.object(result)
     else:
