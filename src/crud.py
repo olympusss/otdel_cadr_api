@@ -1,10 +1,10 @@
-from unittest import result
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func, asc, desc, true
 from models import \
     (
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
-        ParentStatus, Parents, ParentSchema, Region
+        ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
+        WorkedPlaceSchema, WorkedPlaces
     )
 from token_handler import create_access_token
 import json
@@ -307,5 +307,113 @@ async def read_region(db: Session):
     ).all()
     if result:
         return result
+    else:
+        return None
+    
+    
+async def read_student_detail(db: Session, student_id):
+    result = db.query(
+        StudentDetail.id,
+        StudentDetail.living_place,
+        StudentDetail.address,
+        StudentDetail.date_of_birth,
+        StudentDetail.place_of_birth,
+        StudentDetail.nationality,
+        StudentDetail.graduate_school,
+        StudentDetail.languages,
+        StudentDetail.speciality,
+        StudentDetail.academic_degree,
+        StudentDetail.education,
+        StudentDetail.party_member,
+        StudentDetail.other_countries,
+        StudentDetail.assembled_member,
+        StudentDetail.student_id,
+        StudentDetail.region_id,
+        StudentDetail.created_at,
+        StudentDetail.updated_at
+    )\
+    .filter(StudentDetail.student_id == student_id)\
+    .all()
+    if result:
+        return result
+    else:
+        return None
+    
+    
+async def create_student_detail(db: Session, req: StudentDetailSchema):
+    new_add = StudentDetail(**req.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+    
+async def update_student_detail(db: Session, req: StudentDetailSchema, id):
+    new_update = db.query(StudentDetail)\
+    .filter(StudentDetail.id == id)\
+    .update({
+        StudentDetail.living_place      : req.living_place,
+        StudentDetail.address           : req.address,
+        StudentDetail.date_of_birth     : req.date_of_birth,
+        StudentDetail.place_of_birth    : req.place_of_birth,
+        StudentDetail.nationality       : req.nationality,
+        StudentDetail.graduate_school   : req.graduate_school,
+        StudentDetail.languages         : req.languages,
+        StudentDetail.speciality        : req.speciality,
+        StudentDetail.academic_degree   : req.academic_degree,
+        StudentDetail.education         : req.education,
+        StudentDetail.party_member      : req.party_member,
+        StudentDetail.other_countries   : req.other_countries,
+        StudentDetail.assembled_member  : req.assembled_member,
+        StudentDetail.student_id        : req.student_id,
+        StudentDetail.region_id         : req.region_id
+    }, synchronize_session=False)
+    db.commit()
+    if new_update:
+        return True
+    else:
+        return False
+    
+    
+async def create_worked_place(db: Session, req: WorkedPlaceSchema):
+    new_add = WorkedPlaces(**req.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+    
+async def read_worked_places(db: Session, student_id):
+    result = db.query(
+        WorkedPlaces.id,
+        WorkedPlaces.time,
+        WorkedPlaces.place,
+        WorkedPlaces.student_id
+    )\
+    .filter(WorkedPlaces.student_id == student_id)\
+    .all()
+    if result:
+        return result
+    else:
+        return None
+    
+    
+async def update_worked_place(db: Session, id, req: WorkedPlaceSchema):
+    new_update = db.query(WorkedPlaces)\
+    .filter(WorkedPlaces.id == id)\
+    .update({
+        WorkedPlaces.time           : req.time,
+        WorkedPlaces.place          : req.place,
+        WorkedPlaces.student_id     : req.student_id
+    }, synchronize_session=False)
+    db.commit()
+    if new_update:
+        return True
     else:
         return None

@@ -15,9 +15,13 @@ class Students(Base):
     klass                   = Column(String)
     createAt                = Column(DateTime, default=datetime.now(), nullable=False)
     updateAt                = Column(DateTime, default=datetime.now(), nullable=False)
-    students_courses        = relationship("Courses"    , back_populates="courses_students")
-    students_faculties      = relationship("Faculties"  , back_populates="faculties_students")
-    students_parents        = relationship("Parents"    , back_populates="parents_students")
+    students_courses        = relationship("Courses"        , back_populates="courses_students")
+    students_faculties      = relationship("Faculties"      , back_populates="faculties_students")
+    students_parents        = relationship("Parents"        , back_populates="parents_students")
+    students_studentdetail  = relationship("StudentDetail"  , back_populates="studentdetail_students")
+    students_workedplaces   = relationship("WorkedPlaces"   , back_populates="workedplaces_students")
+    
+    
     
     
 class Courses(Base):
@@ -85,3 +89,40 @@ class Region(Base):
     name                    = Column(String, nullable=False)
     created_at              = Column(DateTime, default=datetime.now(), nullable=False)
     updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    region_studentdetail    = relationship("StudentDetail"     , back_populates="studentdetail_region")
+    
+    
+    
+class StudentDetail(Base):
+    __tablename__           = "student_detail"
+    id                      = Column(Integer , primary_key=True, index=True)
+    living_place            = Column(String, nullable=False)
+    address                 = Column(String, nullable=False)
+    date_of_birth           = Column(Date, nullable=False)
+    place_of_birth          = Column(String, nullable=False)
+    nationality             = Column(String, nullable=False)
+    graduate_school         = Column(String, nullable=False)
+    languages               = Column(String, nullable=False)
+    speciality              = Column(String, nullable=False)
+    academic_degree         = Column(String, nullable=False)
+    education               = Column(String, nullable=False)
+    party_member            = Column(String, nullable=False)
+    other_countries         = Column(String, nullable=False)
+    assembled_member        = Column(String, nullable=False)
+    student_id              = Column(Integer, ForeignKey("students.id"))
+    region_id               = Column(Integer, ForeignKey("region.id"))
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    studentdetail_students  = relationship("Students"   , back_populates="students_studentdetail")
+    studentdetail_region    = relationship("Region"     , back_populates="region_studentdetail")
+    
+    
+class WorkedPlaces(Base):
+    __tablename__           = "worked_places"
+    id                      = Column(Integer , primary_key=True, index=True)
+    time                    = Column(String, nullable=False)     
+    place                   = Column(String, nullable=False)     
+    student_id              = Column(Integer, ForeignKey("students.id"))     
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    workedplaces_students   = relationship("Students", back_populates="students_workedplaces")

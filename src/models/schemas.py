@@ -42,3 +42,33 @@ class ParentSchema(BaseModel):
     
     class Config:
         orm_mode = True
+        
+        
+class StudentDetailSchema(BaseModel):
+    living_place        : str
+    address             : str
+    date_of_birth       : str
+    place_of_birth      : str
+    nationality         : str
+    graduate_school     : str
+    languages           : str
+    speciality          : str
+    academic_degree     : str
+    education           : str
+    party_member        : str
+    other_countries     : str
+    assembled_member    : str
+    student_id          : int
+    region_id           : int
+    
+    class Config:
+        orm_mode = True
+        
+        
+class WorkedPlaceSchema(BaseModel):
+    time                : str
+    place               : str
+    student_id          : int
+    
+    class Config:
+        orm_mode = True
