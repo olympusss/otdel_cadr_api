@@ -33,3 +33,12 @@ async def update_worked_place(id: int, req: WorkedPlaceSchema, db: Session = Dep
         return Returns.UPDATED
     else:
         return Returns.NOT_UPDATED
+
+
+@worked_place_router.delete("/delete-worked-place")
+async def delete_worked_place(id: int, db: Session = Depends(get_db)):
+    result = await crud.delete_worked_place(db=db, id=id)
+    if result:
+        return Returns.DELETED
+    else:
+        return Returns.NOT_DELETED

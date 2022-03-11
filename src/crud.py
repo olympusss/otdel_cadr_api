@@ -4,8 +4,9 @@ from models import \
     (
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
-        WorkedPlaceSchema, WorkedPlaces
+        WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema
     )
+from routers import detail
 from token_handler import create_access_token
 import json
 from datetime import datetime
@@ -414,6 +415,79 @@ async def update_worked_place(db: Session, id, req: WorkedPlaceSchema):
     }, synchronize_session=False)
     db.commit()
     if new_update:
+        return True
+    else:
+        return None
+    
+async def read_detail(db: Session, student_id):
+    result = db.query(
+        Detail.id,                      
+        Detail.address,                 
+        Detail.punish,                  
+        Detail.gender,                  
+        Detail.military_service,        
+        Detail.in_dormitory,            
+        Detail.room_dormitory,          
+        Detail.passport_number,         
+        Detail.passport_given_date,     
+        Detail.passport_given_by_whom,  
+        Detail.marital_status,          
+        Detail.last_surname,            
+        Detail.leave_dormitory,         
+        Detail.speciality,              
+        Detail.student_id              
+    )\
+    .filter(Detail.student_id == student_id)\
+    .all()
+    if result:
+        return result
+    else:
+        return None
+    
+    
+async def create_detail(db: Session, req: DetailSchema):
+    new_add = Detail(**req.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+    
+async def update_detail(db: Session, id, req: DetailSchema):
+    new_update = db.query(Detail)\
+    .filter(Detail.id == id)\
+    .update({
+        Detail.address                  : req.address,                 
+        Detail.punish                   : req.punish,                  
+        Detail.gender                   : req.gender,                  
+        Detail.military_service         : req.military_service,        
+        Detail.in_dormitory             : req.in_dormitory,            
+        Detail.room_dormitory           : req.room_dormitory,          
+        Detail.passport_number          : req.passport_number,         
+        Detail.passport_given_date      : req.passport_given_date,     
+        Detail.passport_given_by_whom   : req.passport_given_by_whom,  
+        Detail.marital_status           : req.marital_status,          
+        Detail.last_surname             : req.last_surname,            
+        Detail.leave_dormitory          : req.leave_dormitory,         
+        Detail.speciality               : req.speciality,              
+        Detail.student_id               : req.student_id 
+    }, synchronize_session=False)
+    db.commit()
+    if new_update:
+        return True
+    else:
+        return None
+    
+    
+async def delete_worked_place(db: Session, id):
+    new_delete = db.query(WorkedPlaces)\
+    .filter(WorkedPlaces.id == id)\
+    .delete(synchronize_session=False)
+    db.commit()
+    if new_delete:
         return True
     else:
         return None

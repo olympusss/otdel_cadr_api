@@ -20,6 +20,7 @@ class Students(Base):
     students_parents        = relationship("Parents"        , back_populates="parents_students")
     students_studentdetail  = relationship("StudentDetail"  , back_populates="studentdetail_students")
     students_workedplaces   = relationship("WorkedPlaces"   , back_populates="workedplaces_students")
+    students_detail         = relationship("Detail"         , back_populates="detail_students")
     
     
     
@@ -126,3 +127,25 @@ class WorkedPlaces(Base):
     created_at              = Column(DateTime, default=datetime.now(), nullable=False)
     updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
     workedplaces_students   = relationship("Students", back_populates="students_workedplaces")
+    
+    
+class Detail(Base):
+    __tablename__           = "detail"
+    id                      = Column(Integer , primary_key=True, index=True)
+    address                 = Column(String, nullable=False)
+    punish                  = Column(String, nullable=False)
+    gender                  = Column(Integer, nullable=False)
+    military_service        = Column(Integer, nullable=False)
+    in_dormitory            = Column(Boolean, nullable=False)
+    room_dormitory          = Column(String, nullable=False)
+    passport_number         = Column(String, nullable=False)
+    passport_given_date     = Column(Date, nullable=False)
+    passport_given_by_whom  = Column(String, nullable=False)
+    marital_status          = Column(Integer, nullable=False)
+    last_surname            = Column(String, nullable=False)
+    leave_dormitory         = Column(Integer, nullable=False)
+    speciality              = Column(String, nullable=False)
+    student_id              = Column(Integer, ForeignKey("students.id"))
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    detail_students         = relationship("Students", back_populates="students_detail")

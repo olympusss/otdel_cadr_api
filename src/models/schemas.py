@@ -72,3 +72,23 @@ class WorkedPlaceSchema(BaseModel):
     
     class Config:
         orm_mode = True
+        
+
+class DetailSchema(BaseModel):
+    address                 : str
+    punish                  : str
+    gender                  : int
+    military_service        : int
+    in_dormitory            : bool
+    room_dormitory          : str
+    passport_number         : str
+    passport_given_date     : str
+    passport_given_by_whom  : str
+    marital_status          : int
+    last_surname            : str
+    leave_dormitory         : int
+    speciality              : str
+    student_id              : int
+    
+    class Config:
+        orm_mode = True
