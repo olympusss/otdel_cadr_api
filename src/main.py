@@ -10,7 +10,8 @@ from routers import (
     parent_router,
     student_detail_router,
     worked_place_router,
-    detail_router
+    detail_router,
+    third_detail_router
 )
 
 app = FastAPI()
@@ -34,3 +35,4 @@ app.include_router(parent_router            , tags=["Parents"])
 app.include_router(student_detail_router    , tags=["Student Details"])
 app.include_router(worked_place_router      , tags=["Worked Places"])
 app.include_router(detail_router            , tags=["Details"])
+app.include_router(third_detail_router      , tags=["Third Details"])

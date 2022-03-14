@@ -92,3 +92,15 @@ class DetailSchema(BaseModel):
     
     class Config:
         orm_mode = True
+        
+        
+class ThirdDetailSchema(BaseModel):
+    home_address            : str
+    home_phone              : str
+    phone_number            : str
+    father_phone_number     : str
+    mother_phone_number     : str
+    student_id              : int
+    
+    class Config:
+        orm_mode = True

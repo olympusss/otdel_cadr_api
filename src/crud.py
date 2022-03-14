@@ -4,7 +4,7 @@ from models import \
     (
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
-        WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema
+        WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema
     )
 from routers import detail
 from token_handler import create_access_token
@@ -488,6 +488,53 @@ async def delete_worked_place(db: Session, id):
     .delete(synchronize_session=False)
     db.commit()
     if new_delete:
+        return True
+    else:
+        return None
+    
+    
+async def read_third_detail(db: Session, student_id):
+    result = db.query(
+        ThirdDetail.id,
+        ThirdDetail.home_address,
+        ThirdDetail.home_phone,
+        ThirdDetail.phone_number,
+        ThirdDetail.father_phone_number,
+        ThirdDetail.mother_phone_number,
+        ThirdDetail.student_id
+    )\
+    .filter(ThirdDetail.student_id == student_id)\
+    .all()
+    if result:
+        return result
+    else:
+        return None
+    
+    
+async def create_third_detail(db: Session, req: ThirdDetailSchema):
+    new_add = ThirdDetail(**req.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+    
+async def update_third_detail(db: Session, id, req: ThirdDetailSchema):
+    new_update = db.query(ThirdDetail)\
+    .filter(ThirdDetail.id == id)\
+    .update({
+        ThirdDetail.home_address        : req.home_address,
+        ThirdDetail.home_phone          : req.home_phone,
+        ThirdDetail.phone_number        : req.phone_number,
+        ThirdDetail.father_phone_number : req.father_phone_number,
+        ThirdDetail.mother_phone_number : req.mother_phone_number,
+        ThirdDetail.student_id          : req.student_id
+    }, synchronize_session=False)
+    db.commit()
+    if new_update:
         return True
     else:
         return None

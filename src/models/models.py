@@ -21,6 +21,7 @@ class Students(Base):
     students_studentdetail  = relationship("StudentDetail"  , back_populates="studentdetail_students")
     students_workedplaces   = relationship("WorkedPlaces"   , back_populates="workedplaces_students")
     students_detail         = relationship("Detail"         , back_populates="detail_students")
+    students_thirddetail    = relationship("ThirdDetail"    , back_populates="thirddetail_students")
     
     
     
@@ -149,3 +150,17 @@ class Detail(Base):
     created_at              = Column(DateTime, default=datetime.now(), nullable=False)
     updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
     detail_students         = relationship("Students", back_populates="students_detail")
+    
+    
+class ThirdDetail(Base):
+    __tablename__           = "third_detail"
+    id                      = Column(Integer , primary_key=True, index=True)
+    home_address            = Column(String, nullable=False)
+    home_phone              = Column(String, nullable=False)
+    phone_number            = Column(String, nullable=False)
+    father_phone_number     = Column(String, nullable=False)
+    mother_phone_number     = Column(String, nullable=False)
+    student_id              = Column(Integer, ForeignKey("students.id"))
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    thirddetail_students    = relationship("Students", back_populates="students_thirddetail")
