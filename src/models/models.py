@@ -22,6 +22,7 @@ class Students(Base):
     students_workedplaces   = relationship("WorkedPlaces"   , back_populates="workedplaces_students")
     students_detail         = relationship("Detail"         , back_populates="detail_students")
     students_thirddetail    = relationship("ThirdDetail"    , back_populates="thirddetail_students")
+    students_images         = relationship("Images"         , back_populates="images_students")
     
     
     
@@ -164,3 +165,13 @@ class ThirdDetail(Base):
     created_at              = Column(DateTime, default=datetime.now(), nullable=False)
     updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
     thirddetail_students    = relationship("Students", back_populates="students_thirddetail")
+    
+    
+class Images(Base):
+    __tablename__           = "images"
+    id                      = Column(Integer , primary_key=True, index=True)
+    img                     = Column(String, nullable=False)
+    student_id              = Column(Integer, ForeignKey("students.id"))
+    created_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    updated_at              = Column(DateTime, default=datetime.now(), nullable=False)
+    images_students         = relationship("Students", back_populates="students_images")

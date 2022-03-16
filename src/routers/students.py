@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 from db import get_db
 from returns import Returns 
@@ -50,3 +50,16 @@ async def delete_student(id: int, db: Session = Depends(get_db)):
         return Returns.DELETED
     else:
         return Returns.NOT_DELETED
+    
+    
+@student_router.post("/upload-image")
+async def upload_image(
+        student_id: int, 
+        db: Session = Depends(get_db),
+        file: UploadFile = File(...)
+    ):
+    result = await crud.create_student_image(db=db, student_id=student_id, file=file)
+    if result:
+        return Returns.INSERTED
+    else:
+        return Returns.NOT_INSERTED

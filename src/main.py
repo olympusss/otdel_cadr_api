@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routers import (
     course_router,
     faculty_router,
@@ -15,6 +16,11 @@ from routers import (
 )
 
 app = FastAPI()
+
+
+app.mount('/uploads', StaticFiles(directory="uploads"), name="uploads")
+
+
 origins = ["*"]
 
 app.add_middleware(
@@ -36,3 +42,8 @@ app.include_router(student_detail_router    , tags=["Student Details"])
 app.include_router(worked_place_router      , tags=["Worked Places"])
 app.include_router(detail_router            , tags=["Details"])
 app.include_router(third_detail_router      , tags=["Third Details"])
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

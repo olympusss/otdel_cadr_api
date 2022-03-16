@@ -4,10 +4,11 @@ from models import \
     (
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
-        WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema
+        WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema,
+        Images
     )
-from routers import detail
 from token_handler import create_access_token
+from upload_dependence import upload_image, delete_uploaded_image
 import json
 from datetime import datetime
 
@@ -93,6 +94,12 @@ async def read_students(db: Session):
         Students.course_id,
         Students.faculty_id
     ).all()
+    new_list = []
+    for res in result:
+        res = dict(res)
+        res["img"] = read_uploaded_images(db=db, student_id=res["id"])
+        new_list.append(res)
+    result = new_list
     if result:
         return result
     else:
@@ -109,13 +116,25 @@ async def read_current_student(db: Session, id):
         Students.klass,
         Students.course_id,
         Students.faculty_id
-    ).filter(Students.id == id).all()
+    ).filter(Students.id == id).first()
+    result = dict(result)
+    result["img"] = read_uploaded_images(db=db, student_id=id)
     if result:
         return result
     else:
         return None
+   
     
-    
+def read_uploaded_images(db: Session, student_id):
+    result = db.query(Images.img.label("img_name"))\
+    .filter(Images.student_id == student_id)\
+    .all()
+    if result:
+        return result
+    else:
+        return None
+
+
 async def update_student(db: Session, id, student: StudentSchema):
     new_update = db.query(Students)\
     .filter(Students.id == id)\
@@ -535,6 +554,35 @@ async def update_third_detail(db: Session, id, req: ThirdDetailSchema):
     }, synchronize_session=False)
     db.commit()
     if new_update:
+        return True
+    else:
+        return None
+    
+    
+async def create_student_image(db: Session, student_id, file):
+    get_images = db.query(
+        Images.img
+    )\
+    .filter(Images.student_id == student_id)\
+    .all()
+    if get_images:
+        for images in get_images:
+            if images.img is not None:
+                delete_uploaded_image(image_name=images.img)
+        db.query(Images).filter(Images.student_id == student_id)\
+            .delete(synchronize_session=False)
+        db.commit()
+    uploaded_img_name = upload_image(directory="img", file=file)
+    if not uploaded_img_name:
+        return None
+    new_add = Images(
+        img         = uploaded_img_name,
+        student_id  = student_id
+    )
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    if new_add:
         return True
     else:
         return None

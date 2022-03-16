@@ -9,6 +9,7 @@ from models.models import StudentDetail
 from models.models import WorkedPlaces
 from models.models import Detail
 from models.models import ThirdDetail
+from models.models import Images
 
 
 from models.schemas import StudentSchema
