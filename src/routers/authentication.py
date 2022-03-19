@@ -14,7 +14,7 @@ async def sign_up(req: SignUp, db: Session = Depends(get_db)):
     if result:
         return Returns.token(result)
     else:
-        return Returns.NOT_INSERTED
+        return Returns.USER_EXISTS
     
     
 @authentication_router.post("/sign-in")
@@ -23,4 +23,4 @@ async def sign_in(req: SignIn, db: Session = Depends(get_db)):
     if result:
         return Returns.token(result["token"])
     else:
-        return Returns.NULL
+        return Returns.USER_NOT_FOUND

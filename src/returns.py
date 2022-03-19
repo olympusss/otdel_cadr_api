@@ -12,6 +12,7 @@ class Returns:
     USER_NOT_FOUND    = {"error" : True,  "body" : "USER_NOT_FOUND"}
     STUDENT_NOT_FOUND = {"error" : True,  "body" : "STUDENT_NOT_FOUND"}
     LIMIT             = {"error" : True,  "body" : "LIMIT"}
+    USER_EXISTS       = {"error" : False,  "body" : "USER_EXISTS"}
     
     def object(obj):
         return {"error" : False, "body" : obj}

@@ -83,7 +83,7 @@ async def create_student(db: Session, student: StudentSchema):
         return None
     
     
-async def read_students(db: Session):
+async def read_students(db: Session, page, limit):
     result = db.query(
         Students.id,
         Students.name,
@@ -93,15 +93,21 @@ async def read_students(db: Session):
         Students.klass,
         Students.course_id,
         Students.faculty_id
-    ).all()
-    new_list = []
-    for res in result:
-        res = dict(res)
-        res["img"] = read_uploaded_images(db=db, student_id=res["id"])
-        new_list.append(res)
-    result = new_list
+    )
+    result_count = result.count()
+    result = result.order_by(desc(Students.id)).offset(limit * (page - 1)).limit(limit).all()
     if result:
-        return result
+        new_list = []
+        for res in result:
+            res = dict(res)
+            res["img"] = await read_uploaded_images(db=db, student_id=res["id"])
+            new_list.append(res)
+        result = new_list
+    final = {}
+    final["students"]   = result
+    final["page_count"] = (result_count // limit)
+    if final:
+        return final
     else:
         return None
     
@@ -117,18 +123,19 @@ async def read_current_student(db: Session, id):
         Students.course_id,
         Students.faculty_id
     ).filter(Students.id == id).first()
-    result = dict(result)
-    result["img"] = read_uploaded_images(db=db, student_id=id)
+    if result:
+        result = dict(result)
+        result["img"] = await read_uploaded_images(db=db, student_id=id)
     if result:
         return result
     else:
         return None
    
     
-def read_uploaded_images(db: Session, student_id):
+async def read_uploaded_images(db: Session, student_id):
     result = db.query(Images.img.label("img_name"))\
     .filter(Images.student_id == student_id)\
-    .all()
+    .first()
     if result:
         return result
     else:
