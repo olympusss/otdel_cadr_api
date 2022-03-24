@@ -105,7 +105,7 @@ async def read_students(db: Session, page, limit):
         result = new_list
     final = {}
     final["students"]   = result
-    final["page_count"] = (result_count // limit)
+    final["page_count"] = (result_count // limit) + 1
     if final:
         return final
     else:
@@ -137,7 +137,7 @@ async def read_uploaded_images(db: Session, student_id):
     .filter(Images.student_id == student_id)\
     .first()
     if result:
-        return result
+        return result[0]
     else:
         return None
 
