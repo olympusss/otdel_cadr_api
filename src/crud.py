@@ -137,7 +137,7 @@ async def read_uploaded_images(db: Session, student_id):
     .filter(Images.student_id == student_id)\
     .first()
     if result:
-        return result[0]
+        return result[0][1:]
     else:
         return None
 
