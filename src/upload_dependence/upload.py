@@ -4,7 +4,7 @@ import uuid
 import shutil
 
 def upload_image(directory, file):
-    path_const = f"uploads/{directory}/"
+    path_const = f"/uploads/{directory}/"
     path = sys.path[0] + path_const
     if not os.path.exists(path):
         os.makedirs(path)
