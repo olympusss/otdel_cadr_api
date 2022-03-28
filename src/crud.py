@@ -5,7 +5,7 @@ from models import \
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
         WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema,
-        Images
+        Images, FilterSchema
     )
 from token_handler import create_access_token
 from upload_dependence import upload_image, delete_uploaded_image
@@ -83,7 +83,7 @@ async def create_student(db: Session, student: StudentSchema):
         return None
     
     
-async def read_students(db: Session, page, limit):
+async def read_students(db: Session, page, limit, filter: FilterSchema):
     result = db.query(
         Students.id,
         Students.name,
@@ -92,8 +92,43 @@ async def read_students(db: Session, page, limit):
         Students.identification_number,
         Students.klass,
         Students.course_id,
-        Students.faculty_id
+        Students.faculty_id,
+        StudentDetail.living_place,
+        StudentDetail.address,
+        StudentDetail.date_of_birth,
+        StudentDetail.place_of_birth,
+        StudentDetail.nationality,
+        StudentDetail.graduate_school,
+        StudentDetail.languages,
+        StudentDetail.speciality,
+        StudentDetail.academic_degree,
+        StudentDetail.education,
+        StudentDetail.party_member,
+        StudentDetail.other_countries,
+        StudentDetail.assembled_member,
+        StudentDetail.region_id,
+        Detail.address,               
+        Detail.punish,                
+        Detail.gender,                
+        Detail.military_service,
+        Detail.in_dormitory,
+        Detail.room_dormitory,
+        Detail.passport_number,
+        Detail.passport_given_date,
+        Detail.passport_given_by_whom,
+        Detail.marital_status,
+        Detail.last_surname,
+        Detail.leave_dormitory,
+        Detail.speciality,
+        ThirdDetail.home_address,
+        ThirdDetail.home_phone,
+        ThirdDetail.phone_number,
+        ThirdDetail.father_phone_number,
+        ThirdDetail.mother_phone_number
     )
+    result = result.join(StudentDetail, StudentDetail.student_id == Students.id)
+    result = result.join(Detail, Detail.student_id == Students.id)
+    result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
     result_count = result.count()
     result = result.order_by(desc(Students.id)).offset(limit * (page - 1)).limit(limit).all()
     if result:
@@ -121,8 +156,44 @@ async def read_current_student(db: Session, id):
         Students.identification_number,
         Students.klass,
         Students.course_id,
-        Students.faculty_id
-    ).filter(Students.id == id).first()
+        Students.faculty_id,
+        StudentDetail.living_place,
+        StudentDetail.address,
+        StudentDetail.date_of_birth,
+        StudentDetail.place_of_birth,
+        StudentDetail.nationality,
+        StudentDetail.graduate_school,
+        StudentDetail.languages,
+        StudentDetail.speciality,
+        StudentDetail.academic_degree,
+        StudentDetail.education,
+        StudentDetail.party_member,
+        StudentDetail.other_countries,
+        StudentDetail.assembled_member,
+        StudentDetail.region_id,
+        Detail.address,               
+        Detail.punish,                
+        Detail.gender,                
+        Detail.military_service,
+        Detail.in_dormitory,
+        Detail.room_dormitory,
+        Detail.passport_number,
+        Detail.passport_given_date,
+        Detail.passport_given_by_whom,
+        Detail.marital_status,
+        Detail.last_surname,
+        Detail.leave_dormitory,
+        Detail.speciality,
+        ThirdDetail.home_address,
+        ThirdDetail.home_phone,
+        ThirdDetail.phone_number,
+        ThirdDetail.father_phone_number,
+        ThirdDetail.mother_phone_number
+    )
+    result = result.join(StudentDetail, StudentDetail.student_id == Students.id)
+    result = result.join(Detail, Detail.student_id == Students.id)
+    result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
+    result = result.filter(Students.id == id).first()
     if result:
         result = dict(result)
         result["img"] = await read_uploaded_images(db=db, student_id=id)

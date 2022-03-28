@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 from db import get_db
 from returns import Returns 
-from models import StudentSchema
+from models import StudentSchema, FilterSchema
 import crud
 
 student_router = APIRouter()
@@ -16,9 +16,9 @@ async def add_student(student: StudentSchema, db: Session = Depends(get_db)):
         return Returns.NOT_INSERTED
     
     
-@student_router.get("/get-students")
-async def get_student(page: int, limit: int, db: Session = Depends(get_db)):
-    result = await crud.read_students(db=db, page=page, limit=limit)
+@student_router.post("/get-students")
+async def get_student(page: int, limit: int, filter: FilterSchema, db: Session = Depends(get_db)):
+    result = await crud.read_students(db=db, page=page, limit=limit, filter=FilterSchema)
     if result:
         return Returns.object(result)
     else:

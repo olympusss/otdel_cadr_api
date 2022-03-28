@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class StudentSchema(BaseModel):
     name                    : str
@@ -101,6 +102,24 @@ class ThirdDetailSchema(BaseModel):
     father_phone_number     : str
     mother_phone_number     : str
     student_id              : int
+    
+    class Config:
+        orm_mode = True
+        
+
+class FilterSchema(BaseModel):
+    facultuies              : List[int] = None
+    speciality              : List[str] = None
+    klass                   : List[str] = None
+    gender                  : int = None
+    in_dormitory            : int = None
+    date_of_birth           : List[str] = None
+    regions                 : List[int] = None
+    nationality             : List[str] = None
+    leave_dormitory         : int = None
+    military_service        : int = None
+    course                  : List[int] = None
+    marital_status          : int = None
     
     class Config:
         orm_mode = True
