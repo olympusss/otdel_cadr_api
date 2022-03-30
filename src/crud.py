@@ -503,6 +503,10 @@ async def read_student_detail(db: Session, student_id):
     
     
 async def create_student_detail(db: Session, req: StudentDetailSchema):
+    db.query(StudentDetail)\
+    .filter(StudentDetail.student_id == req.student_id)\
+    .delete(synchronize_session=False)
+    db.commit()
     new_add = StudentDetail(**req.dict())
     db.add(new_add)
     db.commit()
