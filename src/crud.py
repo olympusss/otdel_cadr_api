@@ -83,7 +83,7 @@ async def create_student(db: Session, student: StudentSchema):
         return None
     
     
-async def read_students(db: Session, page, limit, filter: FilterSchema):
+async def read_students(db: Session, page, limit):
     result = db.query(
         Students.id,
         Students.name,
