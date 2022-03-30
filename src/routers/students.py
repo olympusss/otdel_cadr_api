@@ -17,7 +17,7 @@ async def add_student(student: StudentSchema, db: Session = Depends(get_db)):
     
     
 @student_router.get("/get-students")
-async def get_student(page: int, limit: int, filter: FilterSchema, db: Session = Depends(get_db)):
+async def get_student(page: int, limit: int, db: Session = Depends(get_db)):
     result = await crud.read_students(db=db, page=page, limit=limit, filter=FilterSchema)
     if result:
         return Returns.object(result)
