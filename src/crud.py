@@ -611,6 +611,10 @@ async def read_detail(db: Session, student_id):
     
     
 async def create_detail(db: Session, req: DetailSchema):
+    db.query(Detail)\
+    .filter(Detail.student_id == req.student_id)\
+    .delete(synchronize_session=False)
+    db.commit()
     new_add = Detail(**req.dict())
     db.add(new_add)
     db.commit()
@@ -677,6 +681,10 @@ async def read_third_detail(db: Session, student_id):
     
     
 async def create_third_detail(db: Session, req: ThirdDetailSchema):
+    db.query(ThirdDetail)\
+    .filter(ThirdDetail.student_id == req.student_id)\
+    .delete(synchronize_session=False)
+    db.commit()
     new_add = ThirdDetail(**req.dict())
     db.add(new_add)
     db.commit()
