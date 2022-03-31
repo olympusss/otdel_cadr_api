@@ -625,6 +625,7 @@ async def create_detail(db: Session, req: DetailSchema):
         return None
     
     
+    
 async def update_detail(db: Session, id, req: DetailSchema):
     new_update = db.query(Detail)\
     .filter(Detail.id == id)\
