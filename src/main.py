@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from db import Base, engine
-# from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware import Middleware
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+# from starlette.middleware import Middleware
+# from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from routers import (
     course_router,
@@ -17,17 +17,29 @@ from routers import (
     third_detail_router
 )
 
-middleware = [
-    Middleware(
-        CORSMiddleware,
-        allow_origins=['http://172.16.0.7:5000', 'http://192.168.12.168:3000'],
-        allow_credentials=True,
-        allow_methods=['*'],
-        allow_headers=['*']
-    )
-]
+# middleware = [
+#     Middleware(
+#         CORSMiddleware,
+#         allow_origins=['*'],
+#         allow_credentials=True,
+#         allow_methods=['*'],
+#         allow_headers=['*']
+#     )
+# ]
 
-app = FastAPI(middleware=middleware)
+# app = FastAPI(middleware=middleware)
+
+app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app.mount('/uploads', StaticFiles(directory="uploads"), name="uploads")
