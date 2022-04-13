@@ -415,7 +415,7 @@ async def create_parent(db: Session, parent: ParentSchema):
         surname             = parent.surname,
         father_name         = parent.father_name,
         birth_place         = parent.birth_place,
-        date_of_birth       = str2date,
+        date_of_birth       = parent.date_of_birth,
         living_place        = parent.living_place,
         working_place       = parent.working_place,
         criminal_record     = parent.criminal_record,
