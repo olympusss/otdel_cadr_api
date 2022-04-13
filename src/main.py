@@ -31,7 +31,7 @@ from routers import (
 
 app = FastAPI()
 
-origins = ["*", "172.16.0.7:5000/docs"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
