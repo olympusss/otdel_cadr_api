@@ -409,7 +409,6 @@ async def read_current_parents(db: Session, student_id):
     
     
 async def create_parent(db: Session, parent: ParentSchema):
-    str2date = datetime.strptime(parent.date_of_birth, '%d/%m/%Y').date()
     new_add = Parents(
         name                = parent.name,
         surname             = parent.surname,
