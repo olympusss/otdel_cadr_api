@@ -20,7 +20,7 @@ from routers import (
 middleware = [
     Middleware(
         CORSMiddleware,
-        allow_origins=['*'],
+        allow_origins=['http://172.16.0.7:5000', 'http://192.168.12.168:3000'],
         allow_credentials=True,
         allow_methods=['*'],
         allow_headers=['*']
