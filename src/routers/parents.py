@@ -33,6 +33,16 @@ async def add_parent(parent: ParentSchema,db: Session = Depends(get_db)):
         return Returns.NOT_INSERTED
     
     
+@parent_router.put("/update-parent")
+async def update_parent(id: int, parent: ParentSchema, db: Session = Depends(get_db)):
+    result = await crud.update_parent(db=db, id=id, parent=parent)
+    if result:
+        return Returns.UPDATED
+    else:
+        return Returns.NOT_UPDATED
+
+    
+    
 @parent_router.delete("/delete-parent")
 async def delete_parent(id: int, db: Session = Depends(get_db)):
     result = await crud.delete_parent(db=db, id=id)

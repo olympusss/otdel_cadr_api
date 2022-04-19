@@ -83,7 +83,7 @@ async def create_student(db: Session, student: StudentSchema):
         return None
     
     
-async def read_students(db: Session, page, limit):
+async def read_students(db: Session, filter: FilterSchema):
     result = db.query(
         Students.id,
         Students.name,
@@ -93,107 +93,107 @@ async def read_students(db: Session, page, limit):
         Students.klass,
         Students.course_id,
         Students.faculty_id,
-        # StudentDetail.living_place,
-        # StudentDetail.address,
-        # StudentDetail.date_of_birth,
-        # StudentDetail.place_of_birth,
-        # StudentDetail.nationality,
-        # StudentDetail.graduate_school,
-        # StudentDetail.languages,
-        # StudentDetail.speciality,
-        # StudentDetail.academic_degree,
-        # StudentDetail.education,
-        # StudentDetail.party_member,
-        # StudentDetail.other_countries,
-        # StudentDetail.assembled_member,
-        # StudentDetail.region_id,
-        # Detail.address,               
-        # Detail.punish,                
-        # Detail.gender,                
-        # Detail.military_service,
-        # Detail.in_dormitory,
-        # Detail.room_dormitory,
-        # Detail.passport_number,
-        # Detail.passport_given_date,
-        # Detail.passport_given_by_whom,
-        # Detail.marital_status,
-        # Detail.last_surname,
-        # Detail.leave_dormitory,
-        # Detail.speciality,
-        # ThirdDetail.home_address,
-        # ThirdDetail.home_phone,
-        # ThirdDetail.phone_number,
-        # ThirdDetail.father_phone_number,
-        # ThirdDetail.mother_phone_number
+        StudentDetail.living_place,
+        StudentDetail.address,
+        StudentDetail.date_of_birth,
+        StudentDetail.place_of_birth,
+        StudentDetail.nationality,
+        StudentDetail.graduate_school,
+        StudentDetail.languages,
+        StudentDetail.speciality,
+        StudentDetail.academic_degree,
+        StudentDetail.education,
+        StudentDetail.party_member,
+        StudentDetail.other_countries,
+        StudentDetail.assembled_member,
+        StudentDetail.region_id,
+        Detail.address,               
+        Detail.punish,                
+        Detail.gender,                
+        Detail.military_service,
+        Detail.in_dormitory,
+        Detail.room_dormitory,
+        Detail.passport_number,
+        Detail.passport_given_date,
+        Detail.passport_given_by_whom,
+        Detail.marital_status,
+        Detail.last_surname,
+        Detail.leave_dormitory,
+        Detail.speciality,
+        ThirdDetail.home_address,
+        ThirdDetail.home_phone,
+        ThirdDetail.phone_number,
+        ThirdDetail.father_phone_number,
+        ThirdDetail.mother_phone_number
     )
-    # result = result.join(StudentDetail, StudentDetail.student_id == Students.id)
-    # result = result.join(Detail, Detail.student_id == Students.id)
-    # result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
+    result = result.join(StudentDetail, StudentDetail.student_id == Students.id)
+    result = result.join(Detail, Detail.student_id == Students.id)
+    result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
+    
     # * Filter faculty
-    # if filter.facultuies is not None:
-        # result = result.filter(or_(Students.faculty_id == elem for elem in filter.facultuies))
+    if filter.facultuies is not None:
+        result = result.filter(or_(Students.faculty_id == elem for elem in filter.facultuies))
     
-    # # * Filter speciality
-    # if filter.speciality is not None:
-    #     result = result.filter(or_(Detail.speciality == elem for elem in filter.speciality))
+    # * Filter speciality
+    if filter.speciality is not None:
+        result = result.filter(or_(Detail.speciality == elem for elem in filter.speciality))
     
-    # # * Filter class
-    # if filter.klass is not None:
-    #     result = result.filter(or_(Students.klass == elem for elem in filter.klass))
+    # * Filter class
+    if filter.klass is not None:
+        result = result.filter(or_(Students.klass == elem for elem in filter.klass))
     
-    # # * Filter gender
-    # if filter.gender is not None:
-    #     if filter.gender == 1:
-    #         result = result.filter(Detail.gender == 1)
-    #     elif filter.gender == 2:
-    #         result = result.filter(Detail.gender == 2)
+    # * Filter gender
+    if filter.gender is not None:
+        if filter.gender == 1:
+            result = result.filter(Detail.gender == 1)
+        elif filter.gender == 2:
+            result = result.filter(Detail.gender == 2)
     
-    # # * Filter in_dormitory
-    # if filter.in_dormitory is not None:
-    #     if filter.in_dormitory == 0:
-    #         result = result.filter(Detail.in_dormitory == 0)
-    #     elif filter.in_dormitory == 1:
-    #         result = result.filter(Detail.in_dormitory == 1)
+    # * Filter in_dormitory
+    if filter.in_dormitory == True:
+        result = result.filter(Detail.in_dormitory == True)
+    elif filter.in_dormitory == False:
+        result = result.filter(Detail.in_dormitory == False)
     
-    # # * Filter date of birth
-    # if filter.date_of_birth is not None:
-    #     result = result.filter(or_(StudentDetail.date_of_birth.year == elem for elem in filter.date_of_birth))
+    # * Filter date of birth
+    if filter.date_of_birth is not None:
+        result = result.filter(or_(StudentDetail.date_of_birth == elem for elem in filter.date_of_birth))
         
-    # # * Filter regions
-    # if filter.regions is not None:
-    #     result = result.filter(or_(StudentDetail.region_id == elem for elem in filter.regions))
+    # * Filter regions
+    if filter.regions is not None:
+        result = result.filter(or_(StudentDetail.region_id == elem for elem in filter.regions))
         
-    # # * Filter nationality
-    # if filter.nationality is not None:
-    #     result = result.filter(or_(StudentDetail.nationality == elem for elem in filter.nationality))
+    # * Filter nationality
+    if filter.nationality is not None:
+        result = result.filter(or_(StudentDetail.nationality == elem for elem in filter.nationality))
         
-    # # * Filter leave dormitory
-    # if filter.leave_dormitory is not None:
-    #     if filter.leave_dormitory == 0:
-    #         result = result.filter(Detail.leave_dormitory == 0)
-    #     elif filter.leave_dormitory == 1:
-    #         result = result.filter(Detail.leave_dormitory == 1)
+    # * Filter leave dormitory
+    if filter.leave_dormitory is not None:
+        if filter.leave_dormitory == 0:
+            result = result.filter(Detail.leave_dormitory == 0)
+        elif filter.leave_dormitory == 1:
+            result = result.filter(Detail.leave_dormitory == 1)
     
-    # # * Filter military service
-    # if filter.military_service is not None:
-    #     if filter.military_service == 0:
-    #         result = result.filter(Detail.military_service == 0)
-    #     if filter.military_service == 1:
-    #         result = result.filter(Detail.military_service == 1)
+    # * Filter military service
+    if filter.military_service is not None:
+        if filter.military_service == 0:
+            result = result.filter(Detail.military_service == 0)
+        if filter.military_service == 1:
+            result = result.filter(Detail.military_service == 1)
             
-    # # * Filter course
-    # if filter.course is not None:
-    #     result = result.filter(or_(Students.course_id == elem for elem in filter.course))
+    # * Filter course
+    if filter.course is not None:
+        result = result.filter(or_(Students.course_id == elem for elem in filter.course))
         
-    # # * Filter marital status
-    # if filter.marital_status is not None:
-    #     if filter.marital_status == 0:
-    #         result = result.filter(Detail.marital_status == 0)
-    #     elif filter.marital_status == 1:
-    #         result = result.filter(Detail.marital_status == 1)
+    # * Filter marital status
+    if filter.marital_status is not None:
+        if filter.marital_status == 0:
+            result = result.filter(Detail.marital_status == 0)
+        elif filter.marital_status == 1:
+            result = result.filter(Detail.marital_status == 1)
     
     result_count = result.count()
-    result = result.order_by(desc(Students.id)).offset(limit * (page - 1)).limit(limit).all()
+    result = result.order_by(desc(Students.id)).offset(filter.limit * (filter.page - 1)).limit(filter.limit).all()
     if result:
         new_list = []
         for res in result:
@@ -203,7 +203,7 @@ async def read_students(db: Session, page, limit):
         result = new_list
     final = {}
     final["students"]   = result
-    final["page_count"] = (result_count // limit) + 1
+    final["page_count"] = (result_count // filter.limit) + 1
     if final:
         return final
     else:
@@ -426,6 +426,28 @@ async def create_parent(db: Session, parent: ParentSchema):
     db.refresh(new_add)
     if new_add:
         return new_add.id
+    else:
+        return None
+    
+    
+async def update_parent(db: Session, id, parent: ParentSchema):
+    new_update = db.query(Parents).filter(Parents.id == id)\
+    .update({
+        Parents.name                : parent.name,
+        Parents.surname             : parent.surname,
+        Parents.father_name         : parent.father_name,
+        Parents.birth_place         : parent.birth_place,
+        Parents.date_of_birth       : parent.date_of_birth,
+        Parents.living_place        : parent.living_place,
+        Parents.working_place       : parent.working_place,
+        Parents.criminal_record     : parent.criminal_record,
+        Parents.student_id          : parent.student_id,
+        Parents.parent_status_id    : parent.parent_status_id
+    }, synchronize_session=False)
+    db.commit()
+    db.close()
+    if new_update:
+        return True
     else:
         return None
     

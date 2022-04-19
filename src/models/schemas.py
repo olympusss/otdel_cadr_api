@@ -112,7 +112,7 @@ class FilterSchema(BaseModel):
     speciality              : List[str] = None
     klass                   : List[str] = None
     gender                  : int = None
-    in_dormitory            : int = None
+    in_dormitory            : bool
     date_of_birth           : List[str] = None
     regions                 : List[int] = None
     nationality             : List[str] = None
@@ -120,6 +120,8 @@ class FilterSchema(BaseModel):
     military_service        : int = None
     course                  : List[int] = None
     marital_status          : int = None
+    limit                   : int
+    page                    : int
     
     class Config:
         orm_mode = True
