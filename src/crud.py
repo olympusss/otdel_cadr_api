@@ -90,7 +90,7 @@ async def create_student(db: Session, student: StudentSchema):
         return None
     
     
-async def read_students(db: Session, filter: FilterSchema):
+async def read_students(db: Session, page, limit):
     result = db.query(
         Students.id,
         Students.name,
@@ -200,7 +200,7 @@ async def read_students(db: Session, filter: FilterSchema):
     #         result = result.filter(Detail.marital_status == 1)
     
     result_count = result.count()
-    result = result.order_by(desc(Students.id)).offset(filter.limit * (filter.page - 1)).limit(filter.limit).all()
+    result = result.order_by(desc(Students.id)).offset(limit * (page - 1)).limit(limit).all()
     if result:
         new_list = []
         for res in result:
@@ -210,7 +210,7 @@ async def read_students(db: Session, filter: FilterSchema):
         result = new_list
     final = {}
     final["students"]   = result
-    final["page_count"] = (result_count // filter.limit) + 1
+    final["page_count"] = (result_count // limit) + 1
     if final:
         return final
     else:
