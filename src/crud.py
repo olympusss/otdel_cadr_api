@@ -742,11 +742,12 @@ async def create_third_detail(db: Session, req: ThirdDetailSchema):
     .filter(ThirdDetail.student_id == req.student_id)\
     .delete(synchronize_session=False)
     db.commit()
+    db.close()
     new_add = ThirdDetail(**req.dict())
     db.add(new_add)
     db.commit()
-    db.close()
     db.refresh(new_add)
+    db.close()
     if new_add:
         return new_add.id
     else:
