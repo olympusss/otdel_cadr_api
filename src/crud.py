@@ -251,7 +251,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
         
 async def read_current_student(db: Session, id):
     result = db.query(
-        Students.id.label("student_id"),
+        Students.id,
         Students.name,
         Students.surname,
         Students.father_name,
