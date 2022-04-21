@@ -108,11 +108,11 @@ class ThirdDetailSchema(BaseModel):
         
 
 class FilterSchema(BaseModel):
-    facultuies              : List[int] = None
+    faculties              : List[int] = None
     speciality              : List[str] = None
     klass                   : List[str] = None
     gender                  : int = None
-    in_dormitory            : bool
+    in_dormitory            : bool = None
     date_of_birth           : List[str] = None
     regions                 : List[int] = None
     nationality             : List[str] = None

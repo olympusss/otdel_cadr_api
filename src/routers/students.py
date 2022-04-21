@@ -25,6 +25,15 @@ async def get_student(page: int, limit: int, db: Session = Depends(get_db)):
         return Returns.NULL
     
     
+@student_router.post("/get-filter-students")
+async def get_filter_student(filter: FilterSchema, db: Session = Depends(get_db)):
+    result = await crud.read_filter_students(db=db, filter=filter)
+    if result:
+        return Returns.object(result)
+    else:
+        return Returns.NULL
+    
+    
 @student_router.get("/get-current-student")
 async def get_current_student(id: int, db: Session = Depends(get_db)):
     result = await crud.read_current_student(db=db, id=id)
