@@ -251,7 +251,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
         
 async def read_current_student(db: Session, id):
     result = db.query(
-        Students.id,
+        Students.id.label("student_id"),
         Students.name,
         Students.surname,
         Students.father_name,
@@ -259,6 +259,7 @@ async def read_current_student(db: Session, id):
         Students.klass,
         Students.course_id,
         Students.faculty_id,
+        StudentDetail.id.label("student_detail_id"),
         StudentDetail.living_place,
         StudentDetail.address,
         StudentDetail.date_of_birth,
@@ -273,6 +274,7 @@ async def read_current_student(db: Session, id):
         StudentDetail.other_countries,
         StudentDetail.assembled_member,
         StudentDetail.region_id,
+        Detail.id.label("detail_id"),
         Detail.address,               
         Detail.punish,                
         Detail.gender,                
@@ -286,6 +288,7 @@ async def read_current_student(db: Session, id):
         Detail.last_surname,
         Detail.leave_dormitory,
         Detail.speciality,
+        ThirdDetail.id.label("third_detail_id"),
         ThirdDetail.home_address,
         ThirdDetail.home_phone,
         ThirdDetail.phone_number,
