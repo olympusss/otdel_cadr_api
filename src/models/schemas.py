@@ -112,7 +112,7 @@ class FilterSchema(BaseModel):
     speciality              : List[str] = None
     klass                   : List[str] = None
     gender                  : int = None
-    in_dormitory            : bool = None
+    in_dormitory            : int = None
     date_of_birth           : List[str] = None
     regions                 : List[int] = None
     nationality             : List[str] = None

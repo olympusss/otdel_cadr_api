@@ -188,9 +188,9 @@ async def read_filter_students(db: Session, filter: FilterSchema):
             result = result.filter(Detail.gender == 2)
     
     # * Filter in_dormitory
-    if filter.in_dormitory == True:
+    if filter.in_dormitory == 1:
         result = result.filter(Detail.in_dormitory == True)
-    elif filter.in_dormitory == False:
+    elif filter.in_dormitory == 0:
         result = result.filter(Detail.in_dormitory == False)
     
     # * Filter date of birth
