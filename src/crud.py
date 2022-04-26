@@ -131,6 +131,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
         Students.klass,
         Students.course_id,
         Students.faculty_id,
+        StudentDetail.id.label("student_detail_id"),
         StudentDetail.living_place,
         StudentDetail.address,
         StudentDetail.date_of_birth,
@@ -145,6 +146,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
         StudentDetail.other_countries,
         StudentDetail.assembled_member,
         StudentDetail.region_id,
+        Detail.id.label("detail_id"),
         Detail.address,               
         Detail.punish,                
         Detail.gender,                
@@ -158,6 +160,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
         Detail.last_surname,
         Detail.leave_dormitory,
         Detail.speciality,
+        ThirdDetail.id.label("third_detail_id"),
         ThirdDetail.home_address,
         ThirdDetail.home_phone,
         ThirdDetail.phone_number,
@@ -167,6 +170,16 @@ async def read_filter_students(db: Session, filter: FilterSchema):
     result = result.join(StudentDetail, StudentDetail.student_id == Students.id)
     result = result.join(Detail, Detail.student_id == Students.id)
     result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
+    
+    # * Filter search
+    if filter.search is not None:
+        result = result.filter(
+            or_(
+                func.lower(Students.name).like(f"%{filter.search}%"),
+                func.lower(Students.surname).like(f"%{filter.search}%"),
+                func.lower(Students.father_name).like(f"%{filter.search}%"),
+            )
+        )
     
     # * Filter faculty
     if filter.faculties is not None:
