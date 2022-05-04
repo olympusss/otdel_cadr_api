@@ -126,3 +126,10 @@ class FilterSchema(BaseModel):
     
     class Config:
         orm_mode = True
+        
+        
+class CourseSchema(BaseModel):
+    name    : str
+    
+    class Config:
+        orm_mode = True

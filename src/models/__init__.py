@@ -21,3 +21,4 @@ from models.schemas import WorkedPlaceSchema
 from models.schemas import DetailSchema
 from models.schemas import ThirdDetailSchema
 from models.schemas import FilterSchema
+from models.schemas import CourseSchema

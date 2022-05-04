@@ -5,7 +5,7 @@ from models import \
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
         WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema,
-        Images, FilterSchema
+        Images, FilterSchema, CourseSchema
     )
 from token_handler import create_access_token
 from upload_dependence import upload_image, delete_uploaded_image
@@ -20,27 +20,42 @@ async def read_courses(db: Session):
     db.close()
     if result:
         return result
-    f = open("json/courses.json")
-    data = json.load(f)
-    for i in data:
-        name_json = i.get("name")
-        new_add = Courses(
-            name = name_json
-        )
-        db.add(new_add)
-        db.commit()
-        db.refresh(new_add)
-        db.close()
-        if not new_add:
-            return None
-    f.close()
-    result = db.query(
-        Courses.id,
-        Courses.name
-    ).all()
+    else:
+        return None
+    
+    
+async def create_course(db: Session, course: CourseSchema):
+    new_add = Courses(**course.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
     db.close()
-    if result:
-        return result
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+    
+async def update_course(db: Session, course: CourseSchema, id):
+    new_update = db.query(Courses).filter(Courses.id == id)\
+        .update({
+            Courses.name: course.name       
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    if new_update:
+        return True
+    else:
+        return False
+    
+    
+async def delete_course(db: Session, id):
+    new_delete = db.query(Courses).filter(Courses.id == id)\
+        .delete(synchronize_session=False)
+    db.commit()
+    db.close()
+    if new_delete:
+        return True
     else:
         return None
     
