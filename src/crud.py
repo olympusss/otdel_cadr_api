@@ -5,12 +5,11 @@ from models import \
         Students, Courses, Faculties, StudentSchema, SignIn, SignUp, Registration,
         ParentStatus, Parents, ParentSchema, Region, StudentDetail, StudentDetailSchema,
         WorkedPlaceSchema, WorkedPlaces, Detail, DetailSchema, ThirdDetail, ThirdDetailSchema,
-        Images, FilterSchema, CourseSchema
+        Images, FilterSchema, StaticsSchema, DeanSchema, Deans, FacultySchema
     )
 from token_handler import create_access_token
 from upload_dependence import upload_image, delete_uploaded_image
 import json
-from datetime import datetime
 
 async def read_courses(db: Session):
     result = db.query(
@@ -24,7 +23,7 @@ async def read_courses(db: Session):
         return None
     
     
-async def create_course(db: Session, course: CourseSchema):
+async def create_course(db: Session, course: StaticsSchema):
     new_add = Courses(**course.dict())
     db.add(new_add)
     db.commit()
@@ -36,7 +35,7 @@ async def create_course(db: Session, course: CourseSchema):
         return None
     
     
-async def update_course(db: Session, course: CourseSchema, id):
+async def update_course(db: Session, course: StaticsSchema, id):
     new_update = db.query(Courses).filter(Courses.id == id)\
         .update({
             Courses.name: course.name       
@@ -63,32 +62,24 @@ async def delete_course(db: Session, id):
 async def read_faculties(db: Session):
     result = db.query(
         Faculties.id,
-        Faculties.name
+        Faculties.name,
+        Faculties.dean_id
     ).all()
     db.close()
     if result:
         return result
-    f = open("json/fakultetler.json")
-    data = json.load(f)
-    for i in data:
-        name_json = i.get("name")
-        new_add = Faculties(
-            name = name_json
-        )
-        db.add(new_add)
-        db.commit()
-        db.refresh(new_add)
-        db.close()
-        if not new_add:
-            return None
-    f.close()
-    result = db.query(
-        Faculties.id,
-        Faculties.name
-    ).all()
+    else:
+        return None
+    
+    
+async def create_faculty(db: Session, faculty: FacultySchema):
+    new_add = Faculties(**faculty.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
     db.close()
-    if result:
-        return result
+    if new_add:
+        return new_add.id
     else:
         return None
     
@@ -862,6 +853,57 @@ async def create_student_image(db: Session, student_id, file):
     db.refresh(new_add)
     db.close()
     if new_add:
+        return True
+    else:
+        return None
+    
+    
+async def create_dean(db: Session, dean: DeanSchema):
+    new_add = Deans(**dean.dict())
+    db.add(new_add)
+    db.commit()
+    db.refresh(new_add)
+    db.close()
+    if new_add:
+        return new_add.id
+    else:
+        return None
+    
+async def read_deans(db: Session):
+    result = db.query(
+        Deans.id,
+        Deans.name,
+        Deans.surname,
+        Deans.father_name
+    ).all()
+    db.close()
+    if result:
+        return result
+    else:
+        return None
+    
+    
+async def update_dean(db: Session, dean: DeanSchema, id):
+    new_update = db.query(Deans).filter(Deans.id == id).\
+        update({
+            Deans.name          : dean.name,
+            Deans.surname       : dean.surname,
+            Deans.father_name   : dean.father_name
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    if new_update:
+        return True
+    else:
+        return False
+    
+    
+async def delete_dean(db: Session, id):
+    new_delete = db.query(Deans).filter(Deans.id == id).\
+        delete(synchronize_session=False)
+    db.commit()
+    db.close()
+    if new_delete:
         return True
     else:
         return None

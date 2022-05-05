@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from db import get_db
 from returns import Returns
 import crud
-from models import CourseSchema
+from models import StaticsSchema
 
 course_router = APIRouter()
 
@@ -17,7 +17,7 @@ async def get_courses(db: Session = Depends(get_db)):
     
     
 @course_router.post("/add-course")
-async def add_course(course: CourseSchema, db: Session = Depends(get_db)):
+async def add_course(course: StaticsSchema, db: Session = Depends(get_db)):
     result = await crud.create_course(db=db, course=course)
     if result:
         return Returns.id(result)
@@ -26,7 +26,7 @@ async def add_course(course: CourseSchema, db: Session = Depends(get_db)):
     
     
 @course_router.put("/update-course")
-async def update_course(id: int, course: CourseSchema, db: Session = Depends(get_db)):
+async def update_course(id: int, course: StaticsSchema, db: Session = Depends(get_db)):
     result = await crud.update_course(db=db, course=course, id=id)
     if result:
         return Returns.UPDATED

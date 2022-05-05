@@ -10,6 +10,7 @@ from models.models import WorkedPlaces
 from models.models import Detail
 from models.models import ThirdDetail
 from models.models import Images
+from models.models import Deans
 
 
 from models.schemas import StudentSchema
@@ -21,4 +22,6 @@ from models.schemas import WorkedPlaceSchema
 from models.schemas import DetailSchema
 from models.schemas import ThirdDetailSchema
 from models.schemas import FilterSchema
-from models.schemas import CourseSchema
+from models.schemas import StaticsSchema
+from models.schemas import DeanSchema
+from models.schemas import FacultySchema

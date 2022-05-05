@@ -128,8 +128,25 @@ class FilterSchema(BaseModel):
         orm_mode = True
         
         
-class CourseSchema(BaseModel):
+class StaticsSchema(BaseModel):
     name    : str
+    
+    class Config:
+        orm_mode = True
+        
+        
+class DeanSchema(BaseModel):
+    name        : str
+    surname     : str
+    father_name : str
+    
+    class Config:
+        orm_mode = True
+        
+
+class FacultySchema(BaseModel):
+    name        : str
+    dean_id     : int
     
     class Config:
         orm_mode = True

@@ -2,8 +2,6 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
-# from starlette.middleware import Middleware
-# from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from routers import (
     course_router,
@@ -14,20 +12,10 @@ from routers import (
     student_detail_router,
     worked_place_router,
     detail_router,
-    third_detail_router
+    third_detail_router,
+    dean_router
 )
 
-# middleware = [
-#     Middleware(
-#         CORSMiddleware,
-#         allow_origins=['*'],
-#         allow_credentials=True,
-#         allow_methods=['*'],
-#         allow_headers=['*']
-#     )
-# ]
-
-# app = FastAPI(middleware=middleware)
 
 app = FastAPI()
 
@@ -56,6 +44,7 @@ app.include_router(student_detail_router    , tags=["Student Details"])
 app.include_router(worked_place_router      , tags=["Worked Places"])
 app.include_router(detail_router            , tags=["Details"])
 app.include_router(third_detail_router      , tags=["Third Details"])
+app.include_router(dean_router              , tags=["Deans"])
 
 
 if __name__ == "__main__":
