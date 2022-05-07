@@ -16,7 +16,7 @@ async def read_courses(db: Session):
         Courses.id,
         Courses.name,
     ).all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -28,7 +28,7 @@ async def create_course(db: Session, course: StaticsSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -41,7 +41,7 @@ async def update_course(db: Session, course: StaticsSchema, id):
             Courses.name: course.name       
         }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -52,7 +52,7 @@ async def delete_course(db: Session, id):
     new_delete = db.query(Courses).filter(Courses.id == id)\
         .delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_delete:
         return True
     else:
@@ -65,7 +65,7 @@ async def read_faculties(db: Session):
         Faculties.name,
         Faculties.dean_id
     ).all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -77,9 +77,32 @@ async def create_faculty(db: Session, faculty: FacultySchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
+    else:
+        return None
+    
+    
+async def update_faculty(db: Session, id, faculty: FacultySchema):
+    new_update = db.query(Faculties).filter(Faculties.id == id).\
+        update({
+            Faculties.name      : faculty.name,
+            Faculties.dean_id   : faculty.dean_id
+        }, synchronize_session=False)
+    db.commit()
+    if new_update:
+        return True
+    else:
+        return None    
+    
+    
+async def delete_faculty(db: Session, id):
+    new_delete = db.query(Faculties).filter(Faculties.id == id).\
+        delete(synchronize_session=False)
+    db.commit()
+    if new_delete:
+        return True
     else:
         return None
     
@@ -89,7 +112,7 @@ async def create_student(db: Session, student: StudentSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -110,7 +133,7 @@ async def read_students(db: Session, page, limit):
     
     result_count = result.count()
     result = result.order_by(desc(Students.id)).offset(limit * (page - 1)).limit(limit).all()
-    db.close()
+    
     if result:
         new_list = []
         for res in result:
@@ -250,7 +273,7 @@ async def read_filter_students(db: Session, filter: FilterSchema):
             result = result.filter(Detail.marital_status == 1)
     result_count = result.count()
     result = result.order_by(desc(Students.id)).offset(filter.limit * (filter.page - 1)).limit(filter.limit).all()
-    db.close()
+    
     if result:
         new_list = []
         for res in result:
@@ -319,7 +342,7 @@ async def read_current_student(db: Session, id):
     result = result.join(ThirdDetail, ThirdDetail.student_id == Students.id)
     
     result = result.filter(Students.id == id).first()
-    db.close()
+    
     if result:
         result = dict(result)
         result["img"] = await read_uploaded_images(db=db, student_id=id)
@@ -333,7 +356,7 @@ async def read_uploaded_images(db: Session, student_id):
     result = db.query(Images.img.label("img_name"))\
     .filter(Images.student_id == student_id)\
     .first()
-    db.close()
+    
     if result:
         return result[0][1:]
     else:
@@ -353,7 +376,7 @@ async def update_student(db: Session, id, student: StudentSchema):
         Students.klass                  : student.klass
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -365,7 +388,7 @@ async def delete_student(db: Session, id):
     .filter(Students.id == id)\
     .delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_delete:
         return True
     else:
@@ -384,7 +407,7 @@ async def create_sign_up(db: Session, req: SignUp):
         )
     )\
     .first()
-    db.close()
+    
     if get_user:
         return None
     token_dict = {
@@ -399,7 +422,7 @@ async def create_sign_up(db: Session, req: SignUp):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return token
     else:
@@ -416,7 +439,7 @@ async def read_sign_in(db: Session, req: SignIn):
             Registration.password == req.password
         )
     ).first()
-    db.close()
+    
     if result:
         return result
     else:
@@ -428,7 +451,7 @@ async def read_parent_status(db: Session):
         ParentStatus.id,
         ParentStatus.name
     ).all()
-    db.close()
+    
     if result:
         return result
     
@@ -442,7 +465,7 @@ async def read_parent_status(db: Session):
         db.add(new_add)
         db.commit()
         db.refresh(new_add)
-        db.close()
+        
         if not new_add:
             return None
     f.close()
@@ -450,7 +473,7 @@ async def read_parent_status(db: Session):
         ParentStatus.id,
         ParentStatus.name
     ).all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -473,7 +496,7 @@ async def read_current_parents(db: Session, student_id):
     )\
     .filter(Parents.student_id == student_id)\
     .all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -496,7 +519,7 @@ async def create_parent(db: Session, parent: ParentSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -518,7 +541,7 @@ async def update_parent(db: Session, id, parent: ParentSchema):
         Parents.parent_status_id    : parent.parent_status_id
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -530,7 +553,7 @@ async def delete_parent(db: Session, id):
     .filter(Parents.id == id)\
     .delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_delete:
         return True
     else:
@@ -542,7 +565,7 @@ async def read_region(db: Session):
         Region.id,
         Region.name
     ).all()
-    db.close()
+    
     if result:
         return result
     
@@ -556,7 +579,7 @@ async def read_region(db: Session):
         db.add(new_add)
         db.commit()
         db.refresh(new_add)
-        db.close()
+        
         if not new_add:
             return None
     f.close()
@@ -564,7 +587,7 @@ async def read_region(db: Session):
         Region.id,
         Region.name
     ).all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -594,7 +617,7 @@ async def read_student_detail(db: Session, student_id):
     )\
     .filter(StudentDetail.student_id == student_id)\
     .all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -610,7 +633,7 @@ async def create_student_detail(db: Session, req: StudentDetailSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -638,7 +661,7 @@ async def update_student_detail(db: Session, req: StudentDetailSchema, id):
         StudentDetail.region_id         : req.region_id
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -650,7 +673,7 @@ async def create_worked_place(db: Session, req: WorkedPlaceSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -666,7 +689,7 @@ async def read_worked_places(db: Session, student_id):
     )\
     .filter(WorkedPlaces.student_id == student_id)\
     .all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -682,7 +705,7 @@ async def update_worked_place(db: Session, id, req: WorkedPlaceSchema):
         WorkedPlaces.student_id     : req.student_id
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -708,7 +731,7 @@ async def read_detail(db: Session, student_id):
     )\
     .filter(Detail.student_id == student_id)\
     .all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -724,7 +747,7 @@ async def create_detail(db: Session, req: DetailSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -752,7 +775,7 @@ async def update_detail(db: Session, id, req: DetailSchema):
         Detail.student_id               : req.student_id 
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -764,7 +787,7 @@ async def delete_worked_place(db: Session, id):
     .filter(WorkedPlaces.id == id)\
     .delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_delete:
         return True
     else:
@@ -783,7 +806,7 @@ async def read_third_detail(db: Session, student_id):
     )\
     .filter(ThirdDetail.student_id == student_id)\
     .all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -795,12 +818,12 @@ async def create_third_detail(db: Session, req: ThirdDetailSchema):
     .filter(ThirdDetail.student_id == req.student_id)\
     .delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     new_add = ThirdDetail(**req.dict())
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -819,7 +842,7 @@ async def update_third_detail(db: Session, id, req: ThirdDetailSchema):
         ThirdDetail.student_id          : req.student_id
     }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -832,7 +855,7 @@ async def create_student_image(db: Session, student_id, file):
     )\
     .filter(Images.student_id == student_id)\
     .all()
-    db.close()
+    
     if get_images:
         for images in get_images:
             if images.img is not None:
@@ -840,7 +863,7 @@ async def create_student_image(db: Session, student_id, file):
         db.query(Images).filter(Images.student_id == student_id)\
             .delete(synchronize_session=False)
         db.commit()
-        db.close()
+        
     uploaded_img_name = upload_image(directory="img", file=file)
     if not uploaded_img_name:
         return None
@@ -851,7 +874,7 @@ async def create_student_image(db: Session, student_id, file):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return True
     else:
@@ -863,7 +886,7 @@ async def create_dean(db: Session, dean: DeanSchema):
     db.add(new_add)
     db.commit()
     db.refresh(new_add)
-    db.close()
+    
     if new_add:
         return new_add.id
     else:
@@ -876,7 +899,7 @@ async def read_deans(db: Session):
         Deans.surname,
         Deans.father_name
     ).all()
-    db.close()
+    
     if result:
         return result
     else:
@@ -891,7 +914,7 @@ async def update_dean(db: Session, dean: DeanSchema, id):
             Deans.father_name   : dean.father_name
         }, synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_update:
         return True
     else:
@@ -902,7 +925,7 @@ async def delete_dean(db: Session, id):
     new_delete = db.query(Deans).filter(Deans.id == id).\
         delete(synchronize_session=False)
     db.commit()
-    db.close()
+    
     if new_delete:
         return True
     else:
